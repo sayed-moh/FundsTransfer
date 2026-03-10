@@ -9,13 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.FundsTransfer.model.Account;
 import com.example.FundsTransfer.model.TransferRequest;
+import com.example.FundsTransfer.model.TransferResponse;
 import com.example.FundsTransfer.model.User;
-import com.example.FundsTransfer.repository.AccountRepository;
+import com.example.FundsTransfer.repository.*;
 import com.example.FundsTransfer.security.JwtService;
 
 @Service
 @Transactional
 public class AccountServiceImpl implements AccountService {
+
+	@Autowired
+    private UserRepository userRepository;
 	
 	@Autowired
 	private AccountRepository accountRepository;
@@ -25,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	private UserService userService;
+
 
 	@Override
 	public Optional<Account> getAccountByUserId(Long userId) {
@@ -56,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public void transferFunds(String token,TransferRequest transferRequest) {
+	public TransferResponse transferFunds(String token,TransferRequest transferRequest) {
 		if(jwtService.isTokenExpired(token))
 			throw new RuntimeException("This token is expired");
 		Optional<Account> sendingAccount=Optional.of(new Account());
@@ -65,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
 		recievingAccount=accountRepository.findByAccountNumber(transferRequest.getAccountNumberTo().replace("-", ""));
 		if(sendingAccount.isEmpty()||recievingAccount.isEmpty())
 			throw new RuntimeException("This account is invalid");
-		if(transferRequest.getAmount()<0)
+		if(transferRequest.getAmount()<=0)
 			throw new RuntimeException("You must transfer positive amount");
 		if(transferRequest.getAmount()>sendingAccount.get().getBalance())
 			throw new RuntimeException("You have insufficient amount");
@@ -76,6 +81,12 @@ public class AccountServiceImpl implements AccountService {
 		        sendingAccount.get(),
 		        recievingAccount.get()
 		));
+		TransferResponse transferResponse=new TransferResponse();
+		transferResponse.setAccountNumberTo(transferRequest.getAccountNumberTo());
+		transferResponse.setUserName(recievingAccount.get().getUser().getUsername());
+		transferResponse.setBalance(sendingAccount.get().getBalance());
+		return transferResponse;
+		
 		
 		
 

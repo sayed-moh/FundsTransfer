@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import com.example.FundsTransfer.model.Account;
 import com.example.FundsTransfer.model.TransferRequest;
+import com.example.FundsTransfer.model.TransferResponse;
 
 public interface AccountService {
 
 	public Optional<Account> getAccountByUserId(Long userId);
 	public Optional<Account> getAccountByToken(String token);
-//	public Optional<Account> transferFundsByToken(String token, Double amount);
-	public void transferFunds(String token,TransferRequest transferRequest);
+	public TransferResponse transferFunds(String token,TransferRequest transferRequest);
 
 }

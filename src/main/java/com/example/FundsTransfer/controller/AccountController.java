@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.FundsTransfer.model.Account;
 import com.example.FundsTransfer.model.TransferRequest;
+import com.example.FundsTransfer.model.TransferResponse;
 import com.example.FundsTransfer.service.AccountService;
 
 
@@ -28,8 +29,8 @@ public class AccountController {
 	}
 	
 	@PostMapping("/transfer")
-	public void transferFunds(@RequestHeader("Authorization") String authHeader,@RequestBody() TransferRequest transferRequest) {
-		 accountService.transferFunds(authHeader,transferRequest);
+	public TransferResponse transferFunds(@RequestHeader("Authorization") String authHeader,@RequestBody() TransferRequest transferRequest) {
+		return accountService.transferFunds(authHeader,transferRequest);
 	     
 	}
 
