@@ -9,7 +9,7 @@ import lombok.Setter;
 public class TransferRequest {
 	  private String accountNumberFrom;
 	  private String accountNumberTo;
-	  private Integer amount;
+	  private Double amount;
 }
 
   
